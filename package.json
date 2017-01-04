@@ -22,6 +22,9 @@
     "loader-utils": "^0.2.12",
     "steed": "^1.1.2"
   },
+  "engines": {
+    "node": ">= 7"
+  },
   "devDependencies": {
     "chai": "^3.4.1",
     "coveralls": "^2.11.6",
