@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<browserconfig>
+  <msapplication>
+    <tile>
+      <square192x192logo src="file-loader?name=[name].output.[ext]!./icon_1.gif"/>
+      <square256x256logo src="file-loader?name=[name].output.[ext]!./icon_2.gif"/>
+    </tile>
+  </msapplication>
+</browserconfig>
