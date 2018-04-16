@@ -1,6 +1,6 @@
 {
   "name": "web-app-browserconfig-loader",
-  "version": "0.0.1",
+  "version": "1.0.0",
   "description": "Web app browserconfig loader for webpack",
   "main": "index.js",
   "scripts": {
