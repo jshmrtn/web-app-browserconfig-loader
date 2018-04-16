@@ -1,31 +1,49 @@
+# web-app-browserconfig-loader
+
 [![Build Status](https://img.shields.io/travis/jshmrtn/web-app-browserconfig-loader/master.svg?style=flat-square)](http://travis-ci.org/jshmrtn/web-app-browserconfig-loader) [![Coverage Status](https://img.shields.io/coveralls/jshmrtn/web-app-browserconfig-loader/master.svg?style=flat-square)](https://coveralls.io/r/jshmrtn/web-app-browserconfig-loader) [![npm](https://img.shields.io/npm/v/web-app-browserconfig-loader.svg?style=flat-square)](https://www.npmjs.com/package/web-app-browserconfig-loader)
 
-# web-app-browserconfig-loader
+> This loader is optimized to work with Webpack 4+
 
 Load images referenced in the `tile` field in your [Browser configuration](https://msdn.microsoft.com/en-us/library/dn320426(v=vs.85).aspx) using [webpack](https://github.com/webpack/webpack).
 
+## Installation
+
 ```bash
-$ npm install --save web-app-browserconfig-loader
+npm install --save web-app-browserconfig-loader
+```
+
+or
+
+```bash
+yarn add web-app-browserconfig-loader
 ```
 
 ## Usage
 
-[Documentation: Using loaders](http://webpack.github.io/docs/using-loaders.html)
+[Documentation: Loaders](https://webpack.js.org/concepts/#loaders)
 
 In your webpack config:
 
 ```js
 module: {
-  loaders: [
+  rules: [
     {
-      test: /browserconfig.xml$/,
-      loader: 'file?name=browserconfig.xml!web-app-browserconfig'
-    }
-  ]
-}
+      test: /browserconfig\.xml$/,
+      use: [
+        {
+          loader: "file-loader",
+          options: {
+            name: "browserconfig.xml",
+          },
+        },
+        {
+          loader: "web-app-browserconfig-loader",
+        },
+      ],
+    },
 ```
 
-Note that this example also uses [file-loader](https://github.com/webpack/file-loader).
+Note that this example also uses [file-loader](https://github.com/webpack-contrib/file-loader).
 
 Then, require the browserconfig in your application code:
 

@@ -1,15 +1,12 @@
 const path = require('path'),
   loaderUtils = require('loader-utils'),
   steed = require('steed'),
-  libxmljs = require('libxmljs');
+  xmljs = require('xml-js');
 
 function resolveImageSrc(loaderContext, tile, callback) {
-  if(!tile.attr('src')) {
-    return callback(null);
-  }
 
   var dirname = path.dirname(loaderContext.resourcePath),
-    src = tile.attr('src').value();
+      src = tile.attributes.src;
 
   // Resolve the image filename relative to the browserconfig file
   loaderContext.resolve(dirname, src, function(err, filename) {
@@ -28,29 +25,45 @@ function resolveImageSrc(loaderContext, tile, callback) {
 
       // Update the image src property to match the generated filename
       // Is it always the first key in the assets object?
-      tile.attr('src').value(Object.keys(module.assets)[0]);
+      tile.attributes.src = Object.keys(module.buildInfo.assets)[0]
 
       callback(null);
     });
   });
 }
 
+function findElements(xmlElement, expectedName) {
+  return xmlElement.elements.filter(({ name }) => name === expectedName);
+}
+
 module.exports = function(source) {
   const callback = this.async();
 
   try {
-    var browserconfig = libxmljs.parseXml(source);
+    var browserconfig = xmljs.xml2js(source);
+
+    var tiles = findElements(browserconfig, 'browserconfig')
+    .map((element) => findElements(element, 'msapplication'))
+    .reduce((acc, value) => [].concat(acc).concat(value), [])
+    .map((element) => findElements(element, 'tile'))
+    .reduce((acc, value) => [].concat(acc).concat(value), [])
+    .map((element) => element.elements)
+    .reduce((acc, value) => [].concat(acc).concat(value), [])
+    .filter((element) => element.attributes && element.attributes.src);
+
+    steed.map(tiles, resolveImageSrc.bind(null, this), (error) => {
+      if (error) {
+        return callback(error);
+      }
+
+      callback(null, xmljs.js2xml(browserconfig, {
+        spaces: 2,
+        indentAttributes: false,
+      }));
+    });
+
   } catch (err) {
     return callback(new Error('Invalid XML in Browserconfig'));
   }
 
-  const tiles = browserconfig.find('//browserconfig/msapplication/tile/*');
-
-  steed.map(tiles, resolveImageSrc.bind(null, this), (error) => {
-    if (error) {
-      return callback(error);
-    }
-
-    callback(null, browserconfig.toString());
-  });
 };

@@ -1,1 +1,1 @@
-module.exports = 'Error: Cannot resolve \'file\' or \'directory\' ./i-dont-exist.png';
+module.exports = 'Error: Can\'t resolve \'./i-dont-exist.png';

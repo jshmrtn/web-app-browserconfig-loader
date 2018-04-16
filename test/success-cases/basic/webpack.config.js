@@ -1,22 +1,44 @@
+const path = require("path");
+const rootPath = path.resolve(__dirname, ".");
+
 module.exports = {
+  context: rootPath,
+
   entry: {
-    main: __dirname + '/index.js'
+    main: path.join(__dirname, 'index.js')
+  },
+
+  resolve: {
+    extensions: [".json"],
   },
 
   output: {
     filename: 'index.js',
-    path: __dirname + '/actual-output'
+    path: path.join(__dirname, 'actual-output')
   },
 
   module: {
-    loaders: [
+    rules: [
       {
-        test: /browserconfig.xml$/,
-        loader: 'file?name=browserconfig.xml!../../../index.js'
+        test: /browserconfig\.xml$/,
+        use: [
+          {
+            loader: "file-loader",
+            options: {
+              name: "browserconfig.xml",
+            },
+          },
+          {
+            loader: path.resolve(__dirname, "../../../index.js"),
+          },
+        ],
       },
       {
-        test: /.gif$/,
-        loader: 'file?name=[name].[ext]'
+        test: /\.gif$/,
+        loader: 'file-loader',
+        options: {
+          name: "[name].[ext]"
+        }
       }
     ]
   }
